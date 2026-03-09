@@ -19,11 +19,15 @@ It adds browser automation, GUI understanding, and local utility tools while kee
 - Utility tools:
   - `run_code`
   - `search_web`
+  - `wechat_send_message` (deterministic, non-vision WeChat automation)
+    - supports strict focus guard and input verification
+  - `wechat_send_message_fara` (Fara-only loop, returns `ollama_generate_calls`)
 
 ## Safety Notes
 
 - This project does not bypass CAPTCHA or anti-bot protections.
 - If verification pages are detected, tools can pause for manual completion and then resume.
+- Multi-monitor is supported: GUI tools capture and analyze all monitors, then choose the best target monitor.
 
 ## Requirements
 

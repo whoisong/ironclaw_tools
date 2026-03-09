@@ -17,6 +17,8 @@ from agent_service.skills.computer_use import (
 from agent_service.skills.read_screen import read_screen
 from agent_service.skills.run_code import run_code
 from agent_service.skills.search_web import search_web
+from agent_service.skills.wechat_automation import wechat_send_message
+from agent_service.skills.wechat_fara import wechat_send_message_fara
 
 PROTOCOL_VERSION = "2024-11-05"
 
@@ -89,6 +91,45 @@ def tools_manifest() -> list[dict[str, Any]]:
                     "timeout_ms": {"type": "integer", "default": 15000},
                 },
                 "required": ["action"],
+            },
+            "annotations": {"read_only_hint": False, "side_effects_hint": True, "destructive_hint": False},
+        },
+        {
+            "name": "wechat_send_message",
+            "description": "Deterministic WeChat desktop automation: open app, search chat, type message, optional send.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "chat_name": {"type": "string"},
+                    "message": {"type": "string"},
+                    "dry_run": {"type": "boolean", "default": True},
+                    "open_if_needed": {"type": "boolean", "default": True},
+                    "send": {"type": "boolean", "default": False},
+                    "capture_evidence": {"type": "boolean", "default": True},
+                    "strict_focus": {"type": "boolean", "default": True},
+                    "verify_input": {"type": "boolean", "default": True},
+                },
+                "required": ["chat_name", "message"],
+            },
+            "annotations": {"read_only_hint": False, "side_effects_hint": True, "destructive_hint": False},
+        },
+        {
+            "name": "wechat_send_message_fara",
+            "description": "Fara-only WeChat automation loop. Each step uses vision action prediction from Ollama Fara.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "chat_name": {"type": "string"},
+                    "message": {"type": "string"},
+                    "max_steps": {"type": "integer", "default": 20},
+                    "execute": {"type": "boolean", "default": True},
+                    "open_if_needed": {"type": "boolean", "default": True},
+                    "send": {"type": "boolean", "default": False},
+                    "capture_evidence": {"type": "boolean", "default": True},
+                    "step_delay_ms": {"type": "integer", "default": 900},
+                    "max_runtime_seconds": {"type": "integer", "default": 25},
+                },
+                "required": ["chat_name", "message"],
             },
             "annotations": {"read_only_hint": False, "side_effects_hint": True, "destructive_hint": False},
         },
@@ -241,6 +282,29 @@ def handle_mcp_request(payload: dict[str, Any]) -> dict[str, Any]:
                     selector=arguments.get("selector"),
                     text=arguments.get("text"),
                     timeout_ms=int(arguments.get("timeout_ms", 15_000)),
+                )
+            elif tool_name == "wechat_send_message":
+                result = wechat_send_message(
+                    chat_name=str(arguments.get("chat_name", "")),
+                    message=str(arguments.get("message", "")),
+                    dry_run=bool(arguments.get("dry_run", True)),
+                    open_if_needed=bool(arguments.get("open_if_needed", True)),
+                    send=bool(arguments.get("send", False)),
+                    capture_evidence=bool(arguments.get("capture_evidence", True)),
+                    strict_focus=bool(arguments.get("strict_focus", True)),
+                    verify_input=bool(arguments.get("verify_input", True)),
+                )
+            elif tool_name == "wechat_send_message_fara":
+                result = wechat_send_message_fara(
+                    chat_name=str(arguments.get("chat_name", "")),
+                    message=str(arguments.get("message", "")),
+                    max_steps=int(arguments.get("max_steps", 20)),
+                    execute=bool(arguments.get("execute", True)),
+                    open_if_needed=bool(arguments.get("open_if_needed", True)),
+                    send=bool(arguments.get("send", False)),
+                    capture_evidence=bool(arguments.get("capture_evidence", True)),
+                    step_delay_ms=int(arguments.get("step_delay_ms", 900)),
+                    max_runtime_seconds=int(arguments.get("max_runtime_seconds", 25)),
                 )
             elif tool_name == "read_screen":
                 result = read_screen(question=str(arguments.get("question", "")))

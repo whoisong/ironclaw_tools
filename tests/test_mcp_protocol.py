@@ -20,6 +20,8 @@ def test_mcp_initialize_and_list_tools() -> None:
     names = [t["name"] for t in tools.json()["result"]["tools"]]
     assert "browser_google_search" in names
     assert "browser_google_collect_results" in names
+    assert "wechat_send_message" in names
+    assert "wechat_send_message_fara" in names
     assert "read_screen" in names
     assert "fara_gui_task" in names
     assert "fara_gui_task_start" in names
@@ -96,3 +98,25 @@ def test_mcp_call_fara_gui_task_start_and_resume() -> None:
     assert resume.status_code == 200
     resume_payload = _json.loads(resume.json()["result"]["content"][0]["text"])
     assert resume_payload["state"] == "completed"
+
+
+def test_mcp_call_wechat_send_message_dry_run() -> None:
+    call = client.post(
+        "/mcp",
+        json={
+            "jsonrpc": "2.0",
+            "id": 7,
+            "method": "tools/call",
+            "params": {
+                "name": "wechat_send_message",
+                "arguments": {
+                    "chat_name": "test chat",
+                    "message": "Hi - From Ironclaw",
+                    "dry_run": True,
+                },
+            },
+        },
+    )
+    assert call.status_code == 200
+    payload = call.json()["result"]
+    assert payload["content"][0]["type"] == "text"

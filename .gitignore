@@ -15,6 +15,7 @@ venv/
 .env.local
 
 # Runtime artifacts
+test/
 test/*.png
 test/*.log
 test/*_pid.txt
