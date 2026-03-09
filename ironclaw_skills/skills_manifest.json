@@ -1,0 +1,51 @@
+{
+  "skills": [
+    {
+      "name": "computer_use",
+      "description": "Operate the desktop using screenshot + vision action prediction.",
+      "endpoint": "POST /skills/computer_use",
+      "parameters": {
+        "goal": "string",
+        "execute": "boolean (default false)"
+      }
+    },
+    {
+      "name": "browser_use",
+      "description": "Headless browser interaction with Playwright.",
+      "endpoint": "POST /skills/browser_use",
+      "parameters": {
+        "action": "open|click|type|extract",
+        "url": "string?",
+        "selector": "string?",
+        "text": "string?"
+      }
+    },
+    {
+      "name": "read_screen",
+      "description": "Describe current screen for a question.",
+      "endpoint": "POST /skills/read_screen",
+      "parameters": {
+        "question": "string"
+      }
+    },
+    {
+      "name": "run_code",
+      "description": "Execute Python or Bash code snippets locally.",
+      "endpoint": "POST /skills/run_code",
+      "parameters": {
+        "language": "python|bash",
+        "code": "string",
+        "timeout_seconds": "integer"
+      }
+    },
+    {
+      "name": "search_web",
+      "description": "Fetch web search results from DuckDuckGo instant API.",
+      "endpoint": "POST /skills/search_web",
+      "parameters": {
+        "query": "string",
+        "max_results": "integer"
+      }
+    }
+  ]
+}

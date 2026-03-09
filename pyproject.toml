@@ -1,0 +1,36 @@
+[project]
+name = "ironclaw-tool"
+version = "0.1.0"
+description = "Local-first computer-use agent service for IronClaw"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "fastapi>=0.116.0",
+  "httpx>=0.28.1",
+  "pydantic>=2.11.0",
+  "pydantic-settings>=2.11.0",
+  "uvicorn>=0.35.0",
+]
+
+[project.optional-dependencies]
+automation = [
+  "mss>=10.1.0",
+  "pyautogui>=0.9.54",
+  "playwright>=1.55.0",
+]
+dev = [
+  "pytest>=8.4.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+filterwarnings = [
+  "ignore::DeprecationWarning",
+]
+
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["agent_service"]
